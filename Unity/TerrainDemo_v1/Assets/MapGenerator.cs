@@ -8,6 +8,8 @@ public class MapGenerator : MonoBehaviour
     public int height;
     Tile[,] tiles;
 
+	
+
     public string seed;
     public bool useRandomSeed;
 
@@ -16,11 +18,16 @@ public class MapGenerator : MonoBehaviour
     int[,] map;
 
     public bool enableEdgeWalls, enableSmoothing, enableMeshes;
-
+    GameObject parentOfBoxes;
+    
+    public int[,] getMap(){  return this.map;  }
 
     void Start()
     {
+        parentOfBoxes = new GameObject();
+        parentOfBoxes.name = "parent_of_boxes";
         GenerateMap();
+
     }
 
     void GenerateMap()
@@ -41,12 +48,64 @@ public class MapGenerator : MonoBehaviour
             MeshGenerator meshGen = GetComponent<MeshGenerator>();
             meshGen.GenerateMesh(map, 1.0f);
         }
+
+        if (map != null)
+        {
+
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                {
+                    // Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
+                    // Vector3 pos = new Vector3(-width / 2 + x + .5f, 0, -height / 2 + y + .5f);
+                    // Gizmos.DrawCube(pos, Vector3.one);
+                    if(map[x, y] == 1){
+                        GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        box.transform.position = new Vector3(-width / 2 + x + .5f, 0, -height / 2 + y + .5f);
+                        box.name = "box";
+                        box.transform.parent = parentOfBoxes.transform;
+
+                    }
+                    
+                }
+        }
+        parentOfBoxes.AddComponent<MeshFilter>();
+        MeshFilter[] meshFilters = parentOfBoxes.GetComponentsInChildren<MeshFilter>();
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+        int i = 0;
+        while (i < meshFilters.Length)
+        {
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            meshFilters[i].gameObject.SetActive(false);
+
+            i++;
+        }
+        parentOfBoxes.transform.GetComponent<MeshFilter>().mesh = new Mesh();
+        parentOfBoxes.transform.GetComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        parentOfBoxes.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+        parentOfBoxes.transform.gameObject.SetActive(true);
+        MeshRenderer mr = parentOfBoxes.AddComponent<UnityEngine.MeshRenderer>();
+        Material [] mats = Resources.LoadAll<Material>("Materials");
+        parentOfBoxes.GetComponent<Renderer>().material = mats[1];
+        parentOfBoxes.AddComponent<MeshCollider>();
+        GameObject ground = GameObject.Find("Ground");
+        ground.transform.localScale = new Vector3(width/10, .01f, height/10);
+        
     }
     void Update()
     {
+        
         if (Input.GetMouseButtonDown(0))
         {
+            
+            Destroy(parentOfBoxes);
+            GameObject temp = GameObject.Find("box");
+            if(temp!=null) Destroy(temp);
+            parentOfBoxes = new GameObject();
+            parentOfBoxes.name = "parent_of_boxes";
             GenerateMap();
+            
         }
     }
 
@@ -109,17 +168,7 @@ public class MapGenerator : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (map != null)
-        {
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                {
-                    Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-                    Vector3 pos = new Vector3(-width / 2 + x + .5f, 0, -height / 2 + y + .5f);
-                    Gizmos.DrawCube(pos, Vector3.one);
-                }
-
-        }
+        
     }
 
 }

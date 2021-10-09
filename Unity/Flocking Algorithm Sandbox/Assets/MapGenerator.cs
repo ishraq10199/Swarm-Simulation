@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public int width;
-    public int height;
+    int width;
+    int height;
 
-
-
+    public float scale = 1f;
+    
     public string seed;
     public bool useRandomSeed;
 
@@ -21,10 +21,17 @@ public class MapGenerator : MonoBehaviour
 
     public int[,] getMap() { return this.map; }
 
+    public Vector2 MapSize { get { return new Vector2(width, height);  } }
+
     void Start()
     {
+        
+        width = (int)(80f * scale);
+        height = (int)(60f * scale);
+        
         parentOfBoxes = new GameObject();
         parentOfBoxes.name = "parent_of_boxes";
+        parentOfBoxes.transform.SetParent(GameObject.Find("Simulation").transform);
         GenerateMap();
         Flock flock = GameObject.FindObjectOfType<Flock>();
         
@@ -101,12 +108,16 @@ public class MapGenerator : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            width = (int)(80f * scale);
+            height = (int)(60f * scale);
+           
 
             Destroy(parentOfBoxes);
             GameObject temp = GameObject.Find("box");
             if (temp != null) Destroy(temp);
             parentOfBoxes = new GameObject();
             parentOfBoxes.name = "parent_of_boxes";
+            parentOfBoxes.transform.SetParent(GameObject.Find("Simulation").transform);
             GenerateMap();
 
         }
