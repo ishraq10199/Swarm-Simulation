@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    public Material obstacleMaterial;
     int width;
     int height;
 
@@ -93,11 +94,12 @@ public class MapGenerator : MonoBehaviour
         }
         parentOfBoxes.transform.GetComponent<MeshFilter>().mesh = new Mesh();
         parentOfBoxes.transform.GetComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        
         parentOfBoxes.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
         parentOfBoxes.transform.gameObject.SetActive(true);
         MeshRenderer mr = parentOfBoxes.AddComponent<UnityEngine.MeshRenderer>();
-        Material[] mats = Resources.LoadAll<Material>("Materials");
-        parentOfBoxes.GetComponent<Renderer>().material = mats[0];
+
+        parentOfBoxes.GetComponent<Renderer>().material = obstacleMaterial;
         parentOfBoxes.AddComponent<MeshCollider>();
         GameObject ground = GameObject.Find("Ground");
         ground.transform.localScale = new Vector3(width, .1f, height);
@@ -106,21 +108,23 @@ public class MapGenerator : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            width = (int)(80f * scale);
-            height = (int)(60f * scale);
-           
+        
+    }
 
-            Destroy(parentOfBoxes);
-            GameObject temp = GameObject.Find("box");
-            if (temp != null) Destroy(temp);
-            parentOfBoxes = new GameObject();
-            parentOfBoxes.name = "parent_of_boxes";
-            parentOfBoxes.transform.SetParent(GameObject.Find("Simulation").transform);
-            GenerateMap();
+    public void Randomize()
+    {
+        width = (int)(80f * scale);
+        height = (int)(60f * scale);
 
-        }
+
+        Destroy(parentOfBoxes);
+        GameObject temp = GameObject.Find("box");
+        if (temp != null) Destroy(temp);
+        parentOfBoxes = new GameObject();
+        parentOfBoxes.name = "parent_of_boxes";
+        parentOfBoxes.transform.SetParent(GameObject.Find("Simulation").transform);
+        GenerateMap();
+
     }
 
     void SmoothMap()

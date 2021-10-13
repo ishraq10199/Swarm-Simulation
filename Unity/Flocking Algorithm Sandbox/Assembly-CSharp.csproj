@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
+    <Compile Include="Assets\RightSideUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\Filter Scripts\SameFlockFilter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
@@ -70,9 +71,12 @@
     <Compile Include="Assets\FlockBehavior.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Behavior Scripts\FilteredFlockBehavior.cs" />
+    <Compile Include="Assets\UI_Behavior\PauseButtonHandler.cs" />
+    <Compile Include="Assets\SimulationManager.cs" />
     <Compile Include="Assets\FlockAgent.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
+    <Compile Include="Assets\UI_Behavior\RestartButtonHandler.cs" />
     <Compile Include="Assets\Behavior Scripts\CompositeBehavior.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
@@ -85,6 +89,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\Behavior Scripts\AvoidanceBehavior.cs" />
+    <Compile Include="Assets\CameraScaling.cs" />
     <Compile Include="Assets\Flock.cs" />
     <Compile Include="Assets\Behavior Scripts\StayInRadiusBehavior.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
@@ -102,7 +107,8 @@
     <Compile Include="Assets\ContextFilter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
-    <Compile Include="Assets\CameraScaling.cs" />
+    <Compile Include="Assets\UI_Behavior\AgentCountSliderHandler.cs" />
+    <Compile Include="Assets\UI_Behavior\AgentCountSliderLabelHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

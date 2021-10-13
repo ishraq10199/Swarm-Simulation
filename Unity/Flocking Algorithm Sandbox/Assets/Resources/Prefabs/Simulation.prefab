@@ -307,6 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a92bb58c4215194448525a8ceae3ebc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleMaterial: {fileID: 2100000, guid: 087f6dfdb6b08b4469268600879b21d2, type: 2}
   scale: 1
   seed: 
   useRandomSeed: 1

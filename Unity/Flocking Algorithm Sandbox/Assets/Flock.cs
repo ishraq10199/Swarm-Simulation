@@ -35,7 +35,20 @@ public class Flock : MonoBehaviour
 
     public float SquareAvoidanceRadius { get { return squareAvoidanceRadius;  } }
 
+    public void Redeploy()
+    {
+        
 
+        foreach (Transform agent in transform)
+        {
+            Destroy(agent.gameObject);
+        }
+
+        agents.Clear();
+
+        Start();
+
+    }
     // Start is called before the first frame update
     void Start()
     {
