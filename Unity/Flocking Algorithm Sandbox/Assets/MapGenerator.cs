@@ -44,13 +44,14 @@ public class MapGenerator : MonoBehaviour
         map = new int[width, height];
         //tiles = new Tile[width, height];
         RandomFillMap();
+        
         if (enableSmoothing)
         {
             int n = 5;
             while (n-- != 0)
                 SmoothMap();
         }
-
+        
         /*
         if (enableMeshes)
         {
