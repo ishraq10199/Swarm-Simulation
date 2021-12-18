@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Avoidance
   m_EditorClassIdentifier: 
   filter: {fileID: 0}
+  ignoranceFilter: {fileID: 0}

@@ -9,33 +9,60 @@ public class MapGenerator : MonoBehaviour
     int height;
 
     public float scale = 1f;
-    
+
+    public bool placeTarget;
     public string seed;
     public bool useRandomSeed;
+    public bool showPheromoneAsColors;
+
+    public Cells cellScriptComponent;
 
     [Range(0, 100)]
     public int randomFillPercent;
     public int[,] map;
 
+
     public bool enableEdgeWalls, enableSmoothing, enableMeshes;
     GameObject parentOfBoxes;
 
     public int[,] getMap() { return this.map; }
-
+    public int getSeed() { return seed.GetHashCode(); }
     public Vector2 MapSize { get { return new Vector2(width, height);  } }
+
+    public GameObject targets;
+
+    System.Random pseudoRandom;
+
+    public GameObject cells;
+    public Cell[,] cellGrid;
+    
+    [Range(0, 1)]
+    public float diffusionRate;
+
+    [Range(0, 1)]
+    public float evaporationRate;
+
+    public static float dRate;
+    public static float eRate;
+
+    public 
 
     void Start()
     {
         
         width = (int)(80f * scale);
         height = (int)(60f * scale);
-        
+
+        dRate = diffusionRate;
+        eRate = evaporationRate;
+
         parentOfBoxes = new GameObject();
         parentOfBoxes.name = "parent_of_boxes";
         parentOfBoxes.transform.SetParent(GameObject.Find("Simulation").transform);
         GenerateMap();
-        Flock flock = GameObject.FindObjectOfType<Flock>();
-        
+
+
+    
     }
 
     void GenerateMap()
@@ -51,6 +78,8 @@ public class MapGenerator : MonoBehaviour
             while (n-- != 0)
                 SmoothMap();
         }
+
+
         
         /*
         if (enableMeshes)
@@ -61,10 +90,36 @@ public class MapGenerator : MonoBehaviour
         */
         if (map != null)
         {
+            
+            if(cellGrid != null)
+            {
+                //Debug.Log("Entered Cell Destruction");
+                Destroy(cells.gameObject);
 
+                /*
+                for (int x = 0; x < width; x++)
+                    for (int y = 0; y < height; y++)
+                    {
+                        
+                        
+                            Destroy(cells.gameObject);
+                        
+                    }
+                */
+                cells = new GameObject();
+                cellScriptComponent = cells.AddComponent<Cells>();
+                cells.transform.parent = GameObject.Find("Simulation").transform;
+                cells.name = "Cells";
+                cells.transform.position = new Vector3(0f,0f,0f);
+                //Debug.Log("Exited Cell Destruction");
+            }
+            
+            cellGrid = new Cell[width, height];
+            cellScriptComponent.SetCellGrid(cellGrid);
             for (int x = 0; x < width; x++)
                 for (int y = 0; y < height; y++)
                 {
+                    //cellGrid[x, y] = null;
                     // Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
                     // Vector3 pos = new Vector3(-width / 2 + x + .5f, 0, -height / 2 + y + .5f);
                     // Gizmos.DrawCube(pos, Vector3.one);
@@ -77,8 +132,87 @@ public class MapGenerator : MonoBehaviour
                         box.transform.parent = parentOfBoxes.transform;
 
                     }
+                    else
+                    {
+                        //GameObject cell = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                        GameObject cell = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                        //cell causes the bug, so disabling it for now
+
+                        //cell.SetActive(false);
+
+                        MeshCollider cellCollider = cell.GetComponent<MeshCollider>();
+                        cellCollider.convex = true;
+                        cellCollider.isTrigger = true;
+                        //Destroy(cell.GetComponent<MeshCollider>());
+                        //cell.transform.position= new Vector3(-width / 2 + x + .5f, -0.435f, -height / 2 + y + .5f);
+                        cell.transform.position = new Vector3(-width / 2 + x + .5f, 0f, -height / 2 + y + .5f);
+                        cell.transform.localScale = new Vector3(1f, 1f, 1f);
+                        cell.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+                        cell.name = "Cell [" + x + ", " + y + "]";
+                        cell.tag = "cell";
+                        Cell cellComponent = cell.AddComponent<Cell>();
+                        cellGrid[x, y] = cellComponent;
+                        cellGrid[x, y].cellPosition = new Vector2Int(x, y);
+
+                        if (showPheromoneAsColors) Cell.EnablePheromoneColor(true);
+                        cell.transform.parent = cells.transform;
+
+
+                        
+                    }
 
                 }
+
+            // Evaluate Cell bindings for pheromone diffusion later
+            for(int x= 0; x <width; x++)
+                for(int y= 0; y < height; y++)
+                {
+                    if (cellGrid[x, y])
+                    {
+                        cellGrid[x, y].bottom = (y == 0) ? null : cellGrid[x, y - 1];
+                        cellGrid[x, y].bottomLeft = (y == 0 || x == 0) ? null : cellGrid[x - 1, y - 1];
+                        cellGrid[x, y].bottomRight = (y == 0 || x == width - 1) ? null : cellGrid[x + 1, y - 1];
+                        cellGrid[x, y].right = (x == width - 1) ? null : cellGrid[x + 1, y];
+                        cellGrid[x, y].top = (y == height - 1) ? null : cellGrid[x, y + 1];
+                        cellGrid[x, y].topLeft = (y == height - 1 || x == 0) ? null : cellGrid[x - 1, y + 1];
+                        cellGrid[x, y].topRight = (y == height - 1 || x == width - 1) ? null : cellGrid[x + 1, y + 1];
+                        cellGrid[x, y].left = (x == 0) ? null : cellGrid[x - 1, y];
+                    }
+
+                }
+
+
+            // Target Placement 
+
+            bool targetPlaced = false;
+
+            // destroy any existing instance of Target
+            foreach(Transform target in targets.transform)
+            {
+                Destroy(target.gameObject);
+            }
+
+            
+            while (placeTarget && !targetPlaced)
+            {
+                int target_x = pseudoRandom.Next(0, width);
+                int target_y = pseudoRandom.Next(0, height);
+
+                if (cellGrid[target_x, target_y] == null) continue;
+                else
+                {
+                    GameObject target = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    target.transform.position = new Vector3(-width / 2 + target_x + .5f, 0f, -height / 2 + target_y + .5f);
+                    target.transform.localScale = new Vector3(1f, 1f, 1f);
+                    target.name = "Target";
+                    target.GetComponent<Renderer>().material.color = new Color(3f, 3f, 1f);
+                    target.transform.parent = targets.transform;
+                    targetPlaced = true;
+                    cellGrid[target_x, target_y].containsTarget = true;
+                    cellGrid[target_x, target_y].notifyNeighbours();
+                }
+            }
+            
         }
         parentOfBoxes.AddComponent<MeshFilter>();
         MeshFilter[] meshFilters = parentOfBoxes.GetComponentsInChildren<MeshFilter>();
@@ -103,13 +237,21 @@ public class MapGenerator : MonoBehaviour
         parentOfBoxes.GetComponent<Renderer>().material = obstacleMaterial;
         parentOfBoxes.AddComponent<MeshCollider>();
         GameObject ground = GameObject.Find("Ground");
-        ground.transform.localScale = new Vector3(width, .1f, height);
 
-    }
+        if (ground != null)
+        {
+            ground.transform.localScale = new Vector3(width, .1f, height);
+            ground.SetActive(false);
+        }
+
+
+
+        }
     void Update()
     {
+        if (showPheromoneAsColors) Cell.EnablePheromoneColor(true);
+        else Cell.EnablePheromoneColor(false);
 
-        
     }
 
     public void Randomize()
@@ -117,15 +259,17 @@ public class MapGenerator : MonoBehaviour
         width = (int)(80f * scale);
         height = (int)(60f * scale);
 
-
         Destroy(parentOfBoxes);
-        GameObject temp = GameObject.Find("box");
-        if (temp != null) Destroy(temp);
+
         parentOfBoxes = new GameObject();
         parentOfBoxes.name = "parent_of_boxes";
         parentOfBoxes.transform.SetParent(GameObject.Find("Simulation").transform);
+
         GenerateMap();
 
+
+        
+        
     }
 
     void SmoothMap()
@@ -173,7 +317,7 @@ public class MapGenerator : MonoBehaviour
         {
             seed = Time.time.ToString();
         }
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+        pseudoRandom = new System.Random(seed.GetHashCode());
 
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)

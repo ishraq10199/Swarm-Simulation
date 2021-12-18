@@ -11,7 +11,7 @@ public class PhysicsFilter : ContextFilter
         List<Transform> filtered = new List<Transform>();
         foreach(Transform item in original)
         {
-            if (item.CompareTag("Wall"))
+            if (!item.CompareTag("cell"))
                 filtered.Add(item);
 
         }

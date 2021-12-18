@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Flock/Behavior/Alignment")]
 public class AlignmentBehavior : FilteredFlockBehavior
 {
+    public ContextFilter ignoranceFilter;
     public override Vector3 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock)
     {
         // if there are no neighbors, then maintain current alignment
@@ -16,6 +17,8 @@ public class AlignmentBehavior : FilteredFlockBehavior
 
         // filter flock type
         List<Transform> filteredContext = (filter == null) ? context : filter.Filter(agent, context);
+
+        //filteredContext = (ignoranceFilter == null) ? context : ignoranceFilter.Filter(agent, context);
 
         foreach (Transform item in filteredContext)
         {

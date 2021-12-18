@@ -18,6 +18,7 @@ public class CohesionBehavior : FilteredFlockBehavior
 
         foreach (Transform item in filteredContext)
         {
+
             // sum of points
             cohesionMove += item.position;
         }

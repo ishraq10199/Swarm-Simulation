@@ -6,8 +6,11 @@ public class Flock : MonoBehaviour
 {
     public int[,] map;
     public FlockAgent agentPrefab;
-    List<FlockAgent> agents = new List<FlockAgent>();
+    public List<FlockAgent> agents = new List<FlockAgent>();
     public FlockBehavior behavior;
+    public MapGenerator mg;
+
+    public Cells cells;
 
     [Range(.1f, 5f)]
     public float obstacleAvoidanceRadius = 2f;
@@ -35,23 +38,42 @@ public class Flock : MonoBehaviour
 
     public float SquareAvoidanceRadius { get { return squareAvoidanceRadius;  } }
 
-    public void Redeploy()
+
+    public void Clean()
     {
         
+        //Debug.Log("---Agent Cleanup Started---");
 
-        foreach (Transform agent in transform)
+        /*
+        foreach(Transform agent in transform)
         {
             Destroy(agent.gameObject);
         }
+        */
+
+        while(transform.childCount > 0)
+        {
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+
 
         agents.Clear();
 
-        Start();
+        //Debug.Log("---Agent Cleanup Ended---");
 
     }
+
+
+    void Start() { Deploy(); }
+
     // Start is called before the first frame update
-    void Start()
+    public void Deploy()
     {
+        //Debug.Log("-----Starting Agent Deployment-----");
+
+        Random.InitState(mg.getSeed());
+        //cells = mg.cellScriptComponent;
+        
         //transform.localEulerAngles = new Vector3(90f, 0f, 0f);
         squareMaxSpeed = maxSpeed * maxSpeed;
         squareNeighborRadius = neighborRadius * neighborRadius;
@@ -67,15 +89,17 @@ public class Flock : MonoBehaviour
                     transform
                 );
             newAgent.name = "Agent " + i;
-
+            newAgent.tag = "agent";
+            newAgent.cellServer = cells;
             // mark flock type for filterling later on
             newAgent.Initialize(this);
             Vector3 pos = newAgent.transform.localPosition;
-            newAgent.transform.localPosition = new Vector3(pos.x, 0f, pos.z);
+            newAgent.transform.position = new Vector3(pos.x, 0f, pos.z);
             agents.Add(newAgent);
         }
         //transform.localEulerAngles = new Vector3(0f, 0f, 0f);
 
+        //Debug.Log("-----Agents Deployed-----");
     }
 
     // Update is called once per frame
@@ -108,7 +132,9 @@ public class Flock : MonoBehaviour
         {
             if(c != agent.AgentCollider)
             {
+                //Debug.Log(c.tag);
                 context.Add(c.transform);
+                
             }
         }
         return context;

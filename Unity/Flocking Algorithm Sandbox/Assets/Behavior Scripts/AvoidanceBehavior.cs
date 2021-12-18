@@ -15,25 +15,15 @@ public class AvoidanceBehavior : FilteredFlockBehavior
         Vector3 avoidanceMove = Vector3.zero;
         int nAvoid = 0;
 
-        /*
-        if (filter != null)
-        {
-            Collider[] walls = Physics.OverlapSphere(agent.transform.position, flock.obstacleAvoidanceRadius);
-            foreach(Collider wall in walls)
-            {
-                if(wall.CompareTag("Wall"))
-                {
-                    nAvoid++;
-                    avoidanceMove += agent.transform.position - wall.ClosestPoint(agent.transform.position);
-                }
-            }
-        }
-        */
+        
         List<Transform> filteredContext = (filter == null) ? context : filter.Filter(agent, context);
+        
 
         foreach (Transform item in filteredContext)
         {
-            if(Vector3.SqrMagnitude(item.position - agent.transform.position) < flock.SquareAvoidanceRadius)
+            
+
+            if (Vector3.SqrMagnitude(item.position - agent.transform.position) < flock.SquareAvoidanceRadius)
             {
                 nAvoid++;
                 avoidanceMove += agent.transform.position - item.position;

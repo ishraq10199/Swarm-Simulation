@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28360dbd0a550e74b8c76bf06ea43eb7, type: 3}
-  m_Name: Avoid Obstacles
+  m_Script: {fileID: 11500000, guid: 5dc3feb898c9a1f48a3bfe6fcb8a9833, type: 3}
+  m_Name: Stigmergy Cohesion Behavior
   m_EditorClassIdentifier: 
-  filter: {fileID: 0}
+  filter: {fileID: 11400000, guid: d1f24d79fc662124a8e67df5978eff6f, type: 2}
