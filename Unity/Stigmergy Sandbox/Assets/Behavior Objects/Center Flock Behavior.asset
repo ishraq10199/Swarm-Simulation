@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a26c9a77e7ea15a4d9217fbc75e75fbc, type: 3}
+  m_Name: Center Flock Behavior
+  m_EditorClassIdentifier: 
+  filter: {fileID: 0}
+  behaviors:
+  - {fileID: 11400000, guid: 7304a15b745570b4e9b22b86152f698a, type: 2}
+  - {fileID: 11400000, guid: aa0055a212947284f91b4beeda6f3dfd, type: 2}
+  - {fileID: 11400000, guid: cc7e52d0b5432554898200baf64db094, type: 2}
+  - {fileID: 11400000, guid: 1cda8c5f017844542992474a4e196167, type: 2}
+  - {fileID: 11400000, guid: 3bcdd42973648a140bdafb444d9aec8c, type: 2}
+  weights:
+  - 1
+  - 1
+  - 0.01
+  - 1
+  - 1
+  filters:
+  - {fileID: 11400000, guid: 0dba55e75af39bb48bfe814792ec170e, type: 2}
+  - {fileID: 11400000, guid: 1897c47c910e8ef4ba205aa3f64c0305, type: 2}
+  stigFilter: {fileID: 11400000, guid: d1f24d79fc662124a8e67df5978eff6f, type: 2}
+  stigmergyCohesionBehavior: {fileID: 11400000, guid: fdf098022d6a9d64b984bc2b5b1555be, type: 2}
+  stigmergyWeight: 1
