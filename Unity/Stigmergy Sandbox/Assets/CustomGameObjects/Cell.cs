@@ -37,6 +37,7 @@ public class Cell : MonoBehaviour
     public float evaulatedLevel;
 
 
+
     public float GetPreviousPheromoneLevel() { return this.previousPheromoneLevel; }
     // Start is called before the first frame update
     public Pheromone pheromone;
@@ -77,10 +78,11 @@ public class Cell : MonoBehaviour
 
     void Start()
     {
-        gameObject.GetComponent<Renderer>().material.color = Color.white;
+        gameObject.GetComponent<Renderer>().material.color = new Color(0.8f, 0.8f, 0.8f);
         pheromone = gameObject.AddComponent<Pheromone>();
         pheromone.SetPheromone(PheromoneType.None, 0);
         previousPheromoneLevel = 0;
+        
         //neighbourContainsTarget = false;
     }
 
@@ -93,11 +95,11 @@ public class Cell : MonoBehaviour
             {
                 if(this.pheromone.type == PheromoneType.Attractive)
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.Lerp(Color.white, Color.green, this.pheromone.level / 10f);
+                    gameObject.GetComponent<Renderer>().material.color = Color.Lerp(new Color(0.8f, 0.8f, 0.8f), Color.green, this.pheromone.level / 10f);
                 }
                 else if(this.pheromone.type == PheromoneType.Repulsive)
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.Lerp(Color.white, Color.red, this.pheromone.level / 10f);
+                    gameObject.GetComponent<Renderer>().material.color = Color.Lerp(new Color(0.8f, 0.8f, 0.8f), Color.red, this.pheromone.level / 10f);
                 }
                 else
                 {
@@ -106,7 +108,7 @@ public class Cell : MonoBehaviour
             }
             if(this.pheromone.level < 0.09f)
             {
-                gameObject.GetComponent<Renderer>().material.color = Color.white;
+                gameObject.GetComponent<Renderer>().material.color = new Color(0.8f, 0.8f, 0.8f);
             }
 
         }

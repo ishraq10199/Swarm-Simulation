@@ -23,6 +23,7 @@ public class BufferPheromone
 public class Cells : MonoBehaviour
 {
     static int t = 0;
+    static int t2 = 0;
     static Cell[,] cellGrid;
     static BufferPheromone[,] bufferPheromones;
     
@@ -66,9 +67,8 @@ public class Cells : MonoBehaviour
             for (int j = 0; j < h; j++)
             {
                 if (cellGrid[i, j] != null)
-                    bufferPheromones[i, j] = new BufferPheromone(cellGrid[i, j].pheromone);
-                else
-                    bufferPheromones[i, j] = null;
+                    if(cellGrid[i, j].pheromone!=null)
+                        bufferPheromones[i, j] = new BufferPheromone(cellGrid[i, j].pheromone);
             }
         }
 
@@ -142,10 +142,15 @@ public class Cells : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        t = (t + 1) % 30;
+        t = (t + 1) % 5;
+        t2 = (t2 + 1) % 100;
         if (t == 0)
         {
             EvaluatePheromones();
+        }
+        if(t2 == 0)
+        {
+            cellGrid[30, 30].pheromone.SetPheromone(PheromoneType.Attractive, 10f);
         }
     }
 

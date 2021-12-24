@@ -10,6 +10,8 @@ public class MapGenerator : MonoBehaviour
 
     public float scale = 1f;
 
+    public Material cellMaterial;
+
     public bool placeTarget;
     public string seed;
     public bool useRandomSeed;
@@ -153,6 +155,8 @@ public class MapGenerator : MonoBehaviour
                         Cell cellComponent = cell.AddComponent<Cell>();
                         cellGrid[x, y] = cellComponent;
                         cellGrid[x, y].cellPosition = new Vector2Int(x, y);
+
+                        cellGrid[x, y].gameObject.GetComponent<Renderer>().material = cellMaterial;
 
                         if (showPheromoneAsColors) Cell.EnablePheromoneColor(true);
                         cell.transform.parent = cells.transform;
