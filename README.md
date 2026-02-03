@@ -6,6 +6,15 @@ A flexible, no-code swarm robotics simulation framework built in Unity, designed
 
 This framework addresses a critical gap in swarm robotics research: the time-consuming process of modeling simulations from scratch. By providing reusable, modular components and a visual node-based workflow, researchers can rapidly prototype and test swarm algorithms without extensive coding.
 
+> **ℹ️ Information**
+>
+> This project is the core simulation framework, but does not contain stigmergy simulation!
+> 
+> Stigmergy simulation was explored in another minimal repository, on a similar Unity environment.
+>
+> Link: [Github Repository for Stigmergy Testing](https://github.com/ishraq10199/Swarm-Simulation-STIGMERGY)
+
+
 ### Key Features
 
 - **No-Code Development**: Visual block-based workflow using Unity's Bolt toolkit
